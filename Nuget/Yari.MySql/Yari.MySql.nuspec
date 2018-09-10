@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Yari.MySql</id>
+    <version>1.0.1</version>
+    <authors>Reynaldo Hidalgo</authors>
+    <owners>Reynaldo Hidalgo</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/reyhc29/yari</projectUrl>
+    <description>Yari for MySql databases. A JSON Middleware that with no code puts all the database power on the hands of web developers.</description>
+    <tags>json, .net core, database access layer, middletier</tags>
+    <repository type="github" url="https://github.com/reyhc29/yari.git" />
+    <dependencies>
+      <group targetFramework=".NETCoreApp2.1">
+        <dependency id="Newtonsoft.Json" version="11.0.2" exclude="Build,Analyzers"/>
+        <dependency id="MySql.Data" version="8.0.12" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <references>
+        <group targetFramework=".NETCoreApp2.1">
+            <reference file="Yari.dll" />
+        </group>
+    </references>
+  </metadata>
+</package>
