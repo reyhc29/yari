@@ -52,5 +52,7 @@ public IActionResult Post([FromBody]JObject content)
 
 ## Why Yari?
 
-It simply was about time! 
+It simply was about time! Not too late to realize that my wife has been a huge source of inspiration, wisdom and understanding in my profesional live. There has beeen so many lines of code that I have wrote by her side that it makes this library deserve that name ;-)
+
+
 
