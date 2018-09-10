@@ -1,5 +1,5 @@
 # Yari
-A JSON Middleware for Database Development
+A JSON Middleware that with no code puts all the database power on the hands of web developers.
 
 ## When to use Yari?
 
