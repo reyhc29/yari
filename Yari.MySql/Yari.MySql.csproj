@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Authors>Reynaldo Hidalgo</Authors>
+    <Product>Yari</Product>
+    <PackageLicenseUrl>MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/reyhc29/yari</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/reyhc29/yari.git</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>json, .net core, database access layer, middletier</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Yari for MySql databases. A JSON Middleware that with no code puts all the database power on the hands of web developers.</Description>
   </PropertyGroup>
 
   <ItemGroup>
