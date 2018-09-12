@@ -21,14 +21,12 @@ namespace Yari.Service.Controllers
             actionManager.RegisterExecuteHandler("service_call", myServiceCall);
         }
 
-        [HttpPost]
-        public IActionResult Post([FromBody]JObject content)
+        [HttpPost("execute")]
+        public IActionResult Post([FromBody]ActionDescriptor actionDescriptor)
         {
             try
             {
-                ActionDescriptor actionDescritor = new ActionDescriptor(content);
-
-                JObject result = actionManager.Execute(actionDescritor);
+                JObject result = actionManager.Execute(actionDescriptor);
 
                 return new OkObjectResult(result);
             }

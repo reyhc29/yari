@@ -13,20 +13,25 @@ namespace Yari
     public class ActionDescriptor
     {
         private JObject actionDescriptor;
+        private bool defaultConstructorUsed;
+
+        internal bool IsValidated { get; private set; }
 
         public ActionDescriptor()
         {
+            defaultConstructorUsed = true;
 
+            IsValidated = false;
         }
 
-        public ActionDescriptor(string jsonStringActionDescriptor) 
+        public ActionDescriptor(string jsonStringActionDescriptor) : this()
         {
             actionDescriptor = JObject.Parse(jsonStringActionDescriptor);
 
             Validate();
         }
 
-        public ActionDescriptor(JObject jsonActionDescriptor)
+        public ActionDescriptor(JObject jsonActionDescriptor) : this()
         {
             actionDescriptor = jsonActionDescriptor;
 
@@ -37,51 +42,53 @@ namespace Yari
         {
             IsValidated = false;
 
-            if (actionDescriptor == null)
-                throw new ConfigurationException("Provided Action Description is not valid: null value");
-
-            if (!actionDescriptor.HasProperty("ActionName"))
-                throw new ConfigurationException("Provided Action Description is not valid: Action Name is required.");
-            else
-                ActionName = actionDescriptor.GetTypedPropertyValue<string>("ActionName");
-
-            if (!actionDescriptor.HasProperty("ActionType"))
-                ActionType = ActionType.StoredProc;
-            else
-                ActionType = Enum.Parse<ActionType>(actionDescriptor.GetTypedPropertyValue<string>("ActionType"), true);
-
-            if (!actionDescriptor.HasProperty("ResultType"))
-                ResultType = ResultType.Empty;
+            if (defaultConstructorUsed)
+            {
+                if (String.IsNullOrWhiteSpace(ActionName))
+                    throw new ConfigurationException("Provided Action Description is not valid: Action Name is required.");
+            }
             else
             {
-                ResultType = Enum.Parse<ResultType>(actionDescriptor.GetTypedPropertyValue<string>("ResultType"), true);
-
-                if (ResultType == ResultType.MultipleArrays && actionDescriptor.HasProperty("ResultNames"))
-                    ResultNames = new List<string>(actionDescriptor.GetTypedPropertyValue<string[]>("ResultNames"));
+                if (!actionDescriptor.HasProperty("ActionName"))
+                    throw new ConfigurationException("Provided Action Description is not valid: Action Name is required.");
                 else
-                    ResultNames = null;
-            }
+                    ActionName = actionDescriptor.GetTypedPropertyValue<string>("ActionName");
 
-            if (!actionDescriptor.HasProperty("Params"))
-            {
-                Params = null;
-            }
-            else
-            {
-                Params = actionDescriptor.GetTypedPropertyValue<JObject>("Params");
+                if (!actionDescriptor.HasProperty("ActionType"))
+                    ActionType = ActionType.StoredProc;
+                else
+                    ActionType = Enum.Parse<ActionType>(actionDescriptor.GetTypedPropertyValue<string>("ActionType"), true);
+
+                if (!actionDescriptor.HasProperty("ResultType"))
+                    ResultType = ResultType.Empty;
+                else
+                {
+                    ResultType = Enum.Parse<ResultType>(actionDescriptor.GetTypedPropertyValue<string>("ResultType"), true);
+
+                    if (ResultType == ResultType.MultipleArrays && actionDescriptor.HasProperty("ResultNames"))
+                        ResultNames = new List<string>(actionDescriptor.GetTypedPropertyValue<string[]>("ResultNames"));
+                    else
+                        ResultNames = null;
+                }
+
+                if (!actionDescriptor.HasProperty("Params"))
+                {
+                    Params = null;
+                }
+                else
+                {
+                    Params = actionDescriptor.GetPropertyObjectValue("Params");
+                }
             }
 
             IsValidated = true;
         }
 
-        internal bool IsValidated { get; private set; }
-
-
         public string ActionName { get; set; }
 
         public ActionType ActionType { get; set; }
 
-        public JObject Params { get; set; }
+        public dynamic Params { get; set; }
 
         public ResultType ResultType { get; set; }
 

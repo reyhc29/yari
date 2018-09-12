@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Yari.Test")]
 namespace Yari.MySql
 {
     internal class MySqlActionExecuter : DBActionExecuter
@@ -116,10 +118,18 @@ namespace Yari.MySql
                 .Append("(");
 
             if (actionDescriptor.Params != null)
+            {
+                JObject paramsJObj;
+                if (actionDescriptor.Params is JObject)
+                    paramsJObj = actionDescriptor.Params;
+                else
+                    paramsJObj = JObject.FromObject(actionDescriptor.Params);
+
                 result
                     .Append("'")
-                    .Append(actionDescriptor.Params.ToString())
+                    .Append(paramsJObj.ToString())
                     .Append("'");
+            }
             
             result.Append(");");
 

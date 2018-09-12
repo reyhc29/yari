@@ -29,7 +29,20 @@ namespace Yari
         }
 
         /// <summary>
-        /// Executes and action based it's descriptor
+        /// Executes and action based it's ActionDescriptor
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="actionDescriptor"></param>
+        /// <returns>An instance of type T</returns>
+        public T Execute<T>(ActionDescriptor actionDescriptor)
+        {
+            JObject result = Execute(actionDescriptor);
+
+            return result.ToObject<T>();
+        }
+
+        /// <summary>
+        /// Executes and action based it's ActionDescriptor
         /// </summary>
         /// <param name="actionDescriptor"></param>
         /// <returns></returns>

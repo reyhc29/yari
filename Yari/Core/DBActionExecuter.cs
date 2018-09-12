@@ -8,6 +8,7 @@ using Yari;
 
 [assembly: InternalsVisibleTo("Yari.MySql")]
 [assembly: InternalsVisibleTo("Yari.SqlServer")]
+[assembly: InternalsVisibleTo("Yari.Test")]
 namespace Yari
 {
     internal abstract class DBActionExecuter
