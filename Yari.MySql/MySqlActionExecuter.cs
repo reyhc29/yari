@@ -5,6 +5,11 @@ using System.Data;
 using System.Text;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Collections;
+using System;
+using Microsoft.Extensions.Logging;
+using System.Dynamic;
+using System.ComponentModel;
 
 [assembly: InternalsVisibleTo("Yari.Test")]
 namespace Yari.MySql
@@ -20,18 +25,31 @@ namespace Yari.MySql
         {
             JObject result = new JObject();
 
-            string sqlStatment = createSqlStatement(actionDescriptor);
+            MySqlConnection storeConnection = new MySqlConnection(this.connectionString);
 
-            IDbConnection storeConnection = new MySqlConnection(this.connectionString);
-
-            using (MySqlCommand command = (MySqlCommand)storeConnection.CreateCommand())
+            using (MySqlCommand command = new MySqlCommand(actionDescriptor.ActionName, storeConnection))
             {
-                command.CommandText = sqlStatment;
-                command.CommandType = CommandType.Text;
+                command.CommandType = CommandType.StoredProcedure;
 
                 command.Connection.Open();
                 try
                 {
+                    if (actionDescriptor.Params != null)
+                    {
+                        foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(actionDescriptor.Params))
+                        {
+                            MySqlParameter parameter = new MySqlParameter(propertyDescriptor.Name, propertyDescriptor.GetValue(actionDescriptor.Params));
+
+                            if (actionDescriptor.Params is JObject)
+                                parameter.MySqlDbType = MySqlDbType.JSON;
+
+                            command.Parameters.Add(parameter);
+                        }
+                    }
+
+                    if (logger != null)
+                        logger.LogDebug("Executing query: ", getGeneratedSql(command));
+
                     if (actionDescriptor.ResultType == ResultType.Empty)
                     {
                         command.ExecuteNonQuery();
@@ -74,8 +92,8 @@ namespace Yari.MySql
                                     //initialize new array with name
                                     dataArray = new JArray();
                                     if (actionDescriptor.ResultType == ResultType.MultipleArrays)
-                                        if (actionDescriptor.ResultNames != null && actionDescriptor.ResultNames.Count >= resultsCount)
-                                            resultName = actionDescriptor.ResultNames[resultsCount-1];
+                                        if (actionDescriptor.ResultNames != null && actionDescriptor.ResultNames.Count() >= resultsCount)
+                                            resultName = actionDescriptor.ResultNames.ElementAt(resultsCount - 1);
                                         else
                                             resultName = $"result{resultsCount}";
                                     else
@@ -98,6 +116,13 @@ namespace Yari.MySql
                         }
                     }
                 }
+                catch (Exception exp)
+                {
+                    if (logger != null)
+                        logger.LogError(exp, "Action Execution Failed!");
+
+                    throw;
+                }
                 finally
                 {
                     if (command.Connection.State != ConnectionState.Closed)
@@ -108,33 +133,25 @@ namespace Yari.MySql
             return result; 
         }
 
-        private string createSqlStatement(ActionDescriptor actionDescriptor)
+        private string getGeneratedSql(MySqlCommand cmd)
         {
-            StringBuilder result = new StringBuilder();
+            string result;
 
-            result
-                .Append((actionDescriptor.ActionType == ActionType.StoredProc) ? "call " : "select ")
-                .Append(actionDescriptor.ActionName)
-                .Append("(");
-
-            if (actionDescriptor.Params != null)
+            List<string> parameters = new List<string>();
+            foreach (MySqlParameter p in cmd.Parameters)
             {
-                JObject paramsJObj;
-                if (actionDescriptor.Params is JObject)
-                    paramsJObj = actionDescriptor.Params;
-                else
-                    paramsJObj = JObject.FromObject(actionDescriptor.Params);
-
-                result
-                    .Append("'")
-                    .Append(paramsJObj.ToString())
-                    .Append("'");
+                string isQuted = (p.Value is string) ? "'" : "";
+                parameters.Add(isQuted + p.Value.ToString() + isQuted);
             }
-            
-            result.Append(");");
 
-            return result.ToString();
+            if (parameters.Count == 0)
+                result = $"{cmd.CommandText.ToString()}()";
+            else
+                result = $"{cmd.CommandText.ToString()}({string.Join(',', parameters)})";
+
+            return result;
         }
+
 
         private class RowData
         {

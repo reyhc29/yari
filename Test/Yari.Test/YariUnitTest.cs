@@ -49,5 +49,54 @@ namespace Yari.Test
 
             Assert.IsNotNull(result);
         }
+
+        [TestMethod]
+        public void TestExecute3()
+        {
+            ActionDescriptor actionDescriptor = new ActionDescriptor()
+            {
+                ActionName = "yari_test_3",
+                ResultType = ResultType.Scalar,
+            };
+
+            JObject result = actionManager.Execute(actionDescriptor);
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void TestExecute4()
+        {
+            dynamic param = new
+            {
+                @params = JObject.FromObject(new
+                {
+                    age = 1,
+                    name = "yari",
+                    jobs = new List<string> { "developer", "support", "mathematichian" }
+                }).ToString()
+            };
+
+            Test4 result = actionManager.ExecuteDBAction<Test4>("yari_test_1", ResultType.MultipleArrays, param);
+
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void TestExecute5()
+        {
+            dynamic param = new
+            {
+                age = 1,
+                name = "yari",
+                birthday = DateTime.Now
+            };
+
+            Test5 result = actionManager.ExecuteDBAction<Test5>("yari_test_4", ResultType.Object, param);
+
+            Assert.IsNotNull(result);
+        }
+
+        
     }
 }

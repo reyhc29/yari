@@ -23,18 +23,22 @@ namespace Yari.Test
         [TestMethod]
         public void TestPostExecute1()
         {
-            ActionDescriptor actionDescriptor = new ActionDescriptor()
+            object data = new 
             {
                     ActionName = "yari_test_1",
 	                ResultType = ResultType.MultipleArrays,
-	                Params = new {
-                        age = 1,
-                        name = "yari",
-                        jobs = new List<string> { "developer", "support", "mathematichian" }
+	                Params = new
+                    {
+                        @params = new
+                        {
+                            age = 1,
+                            name = "yari",
+                            jobs = new List<string> { "developer", "support", "mathematichian" }
+                        }
                     }
             };
 
-            var response = client.PostAsJsonAsync<ActionDescriptor>("execute", actionDescriptor);
+            var response = client.PostAsJsonAsync<object>("execute", data);
             response.Wait();
             var result = response.Result.Content.ReadAsAsync<JObject>();
             result.Wait();
@@ -45,13 +49,13 @@ namespace Yari.Test
         [TestMethod]
         public void TestPostExecute2()
         {
-            ActionDescriptor actionDescriptor = new ActionDescriptor()
+            object data = new 
             {
                 ActionName = "yari_test_2",
                 ResultType = ResultType.Array,
             };
 
-            var response = client.PostAsJsonAsync<ActionDescriptor>("execute", actionDescriptor);
+            var response = client.PostAsJsonAsync<object>("execute", data);
             response.Wait();
             var result = response.Result.Content.ReadAsAsync<JObject>();
             result.Wait();

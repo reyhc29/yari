@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Yari.MySql</id>
-    <version>1.0.2</version>
+    <version>1.0.4</version>
     <authors>Reynaldo Hidalgo</authors>
     <owners>Reynaldo Hidalgo</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/reyhc29/yari</projectUrl>
-    <description>Yari for MySql databases. A JSON Middleware that with no code puts all the database power on the hands of web developers.</description>
-    <tags>mysql, spa, json, .net core, database access layer, middletier</tags>
+    <description>Yari for MySql databases. Easily execute mysql stored procedures and functions from the browser; just deploying a single method Web.API service. Also useful to create a Data Access Layer for mysql in any .net core application</description>
+    <tags>mysql, spa, json, .net core, dal, middletier, ef alternative</tags>
     <repository type="github" url="https://github.com/reyhc29/yari.git" />
     <dependencies>
       <group targetFramework=".NETCoreApp2.1">

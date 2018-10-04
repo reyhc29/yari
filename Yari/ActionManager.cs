@@ -29,6 +29,24 @@ namespace Yari
         }
 
         /// <summary>
+        /// Executes db actions in a way that is more friendly when using the class from c#
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="actionName"></param>
+        /// <param name="parameters">Make sure all provided parameters have a real type, the mysql driver will attemp to derive the proper db type from the object type</param>
+        /// <param name="resultType"></param>
+        /// <param name="resultNames"></param>
+        /// <returns>Returns a typed result. For complex result type make sure the provided Type has the proper json attributes for deserializing: result, result1, result2 ...</returns>
+        public T ExecuteDBAction<T>(string actionName, ResultType resultType, dynamic parameters)
+        {
+            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.DB };
+
+            T result = Execute<T>(actionDescriptor);
+
+            return result;
+        }
+
+        /// <summary>
         /// Executes and action based it's ActionDescriptor
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -36,9 +54,11 @@ namespace Yari
         /// <returns>An instance of type T</returns>
         public T Execute<T>(ActionDescriptor actionDescriptor)
         {
-            JObject result = Execute(actionDescriptor);
+            JObject jsonResult = Execute(actionDescriptor);
 
-            return result.ToObject<T>();
+            T result = jsonResult.ToObject<T>();
+
+            return result;
         }
 
         /// <summary>
@@ -63,7 +83,7 @@ namespace Yari
                 result = executeHandlers[actionDescriptor.ActionName].Invoke(actionDescriptor);
             }
             else
-            {                
+            {
                 result = dbActionExecuter.Execute(actionDescriptor);
             }
 
@@ -74,6 +94,10 @@ namespace Yari
 
             return result;
         }
+
+       
+
+        
 
         public void RegisterBeforeExecuteHandler(string actionName, Action<dynamic> actionHandler, bool throwIfExist = false)
         {
