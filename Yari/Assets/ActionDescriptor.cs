@@ -6,7 +6,7 @@ using Yari.Exceptions;
 
 namespace Yari
 {
-    public enum ActionType { DB = 0, Web = 1 };
+    public enum ActionType { StoredProcedure = 0, Function = 1, Web = 2 };
 
     public enum ResultType { Empty = 0, Scalar = 1, Object = 2, Array = 3, MultipleArrays = 4  }
         
@@ -55,7 +55,7 @@ namespace Yari
                     ActionName = actionDescriptor.GetTypedPropertyValue<string>("ActionName");
 
                 if (!actionDescriptor.HasProperty("ActionType"))
-                    ActionType = ActionType.DB;
+                    ActionType = ActionType.StoredProcedure;
                 else
                     ActionType = Enum.Parse<ActionType>(actionDescriptor.GetTypedPropertyValue<string>("ActionType"), true);
 
@@ -77,7 +77,7 @@ namespace Yari
                 }
                 else
                 {
-                    Params = actionDescriptor.GetPropertyObjectValue("Params");
+                    Params = actionDescriptor.GetTypedPropertyValue<IEnumerable<dynamic>>("Params");
                 }
             }
 
@@ -92,7 +92,7 @@ namespace Yari
         /// This can either be a object or an array. When an array is sent, then parameters will be sent in that same order to the stored proc or function. 
         /// If an object is sent, then only one parameter will be sent to the stored proc or funtion as a json value
         /// </summary>
-        public dynamic Params { get; set; }
+        public IEnumerable<dynamic> Params { get; set; }
 
         public ResultType ResultType { get; set; }
 

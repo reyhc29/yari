@@ -21,11 +21,16 @@ namespace Yari
 
         internal DBActionExecuter dbActionExecuter;
 
-        public ActionManager() 
+        internal ActionManager() 
         {
             beforeExecuteHandlers = new Dictionary<string, Action<dynamic>>();
             executeHandlers = new Dictionary<string, Func<dynamic, JObject>>();
             afterExecuteHandlers = new Dictionary<string, Func<dynamic, JObject, JObject>>();
+        }
+
+        public ActionManager(DBActionExecuter dbActionExecuter) : this()
+        {
+            this.dbActionExecuter = dbActionExecuter;
         }
 
         /// <summary>
@@ -37,11 +42,37 @@ namespace Yari
         /// <param name="resultType"></param>
         /// <param name="resultNames"></param>
         /// <returns>Returns a typed result. For complex result type make sure the provided Type has the proper json attributes for deserializing: result, result1, result2 ...</returns>
-        public T ExecuteDBAction<T>(string actionName, ResultType resultType, dynamic parameters)
+        public T ExecuteStoredProc<T>(string actionName, ResultType resultType, params dynamic[] parameters)
         {
-            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.DB };
+            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.StoredProcedure };
 
             T result = Execute<T>(actionDescriptor);
+
+            return result;
+        }
+
+        public void ExecuteStoredProc(string actionName, params dynamic[] parameters)
+        {
+            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = ResultType.Empty, ResultNames = null, ActionType = ActionType.StoredProcedure };
+
+            Execute(actionDescriptor);
+        }
+
+        /// <summary>
+        /// Executes a db function in similar fashion as ExecuteStoredProc
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="actionName"></param>
+        /// <param name="resultType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public T ExecuteFunction<T>(string actionName, ResultType resultType, params dynamic[] parameters)
+        {
+            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.Function };
+
+            JObject jsonResult = Execute(actionDescriptor);
+
+            T result = jsonResult.GetTypedPropertyValue<T>("result");
 
             return result;
         }

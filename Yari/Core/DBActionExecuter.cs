@@ -11,7 +11,7 @@ using Yari;
 [assembly: InternalsVisibleTo("Yari.Test")]
 namespace Yari
 {
-    internal abstract class DBActionExecuter
+    public abstract class DBActionExecuter
     {
         protected string connectionString;
 

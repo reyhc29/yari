@@ -29,12 +29,9 @@ namespace Yari.Test
 	                ResultType = ResultType.MultipleArrays,
 	                Params = new
                     {
-                        @params = new
-                        {
-                            age = 1,
-                            name = "yari",
-                            jobs = new List<string> { "developer", "support", "mathematichian" }
-                        }
+                        age = 1,
+                        name = "yari",
+                        jobs = new List<string> { "developer", "support", "mathematichian" }
                     }
             };
 

@@ -16,7 +16,7 @@ namespace Yari.Test
             get
             {
                 ActionManager actionManager = new ActionManager();
-                actionManager.dbActionExecuter = new MySqlActionExecuter("[yourdbconnectionstring]");
+                actionManager.dbActionExecuter = new MySqlActionExecuter("Server=db.cantinon.com;Username=app;Password=*app*anivela*;database=cantinon;Port=3306;ConvertZeroDateTime=true;PersistSecurityInfo=True;AllowUserVariables=True;SslMode=none;");
 
                 return actionManager;
             }
@@ -67,17 +67,14 @@ namespace Yari.Test
         [TestMethod]
         public void TestExecute4()
         {
-            dynamic param = new
+            dynamic param = JObject.FromObject(new
             {
-                @params = JObject.FromObject(new
-                {
-                    age = 1,
-                    name = "yari",
-                    jobs = new List<string> { "developer", "support", "mathematichian" }
-                }).ToString()
-            };
+                age = 1,
+                name = "yari",
+                jobs = new List<string> { "developer", "support", "mathematichian" }
+            });
 
-            Test4 result = actionManager.ExecuteDBAction<Test4>("yari_test_1", ResultType.MultipleArrays, param);
+            Test4 result = actionManager.ExecuteStoredProc<Test4>("yari_test_1", ResultType.MultipleArrays, param);
 
             Assert.IsNotNull(result);
         }
@@ -85,14 +82,7 @@ namespace Yari.Test
         [TestMethod]
         public void TestExecute5()
         {
-            dynamic param = new
-            {
-                age = 1,
-                name = "yari",
-                birthday = DateTime.Now
-            };
-
-            Test5 result = actionManager.ExecuteDBAction<Test5>("yari_test_4", ResultType.Object, param);
+            Test5 result = actionManager.ExecuteStoredProc<Test5>("yari_test_4", ResultType.Object, 1, "yari", DateTime.Now);
 
             Assert.IsNotNull(result);
         }
