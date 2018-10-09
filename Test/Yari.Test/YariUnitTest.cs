@@ -16,7 +16,7 @@ namespace Yari.Test
             get
             {
                 ActionManager actionManager = new ActionManager();
-                actionManager.dbActionExecuter = new MySqlActionExecuter("Server=db.cantinon.com;Username=app;Password=*app*anivela*;database=cantinon;Port=3306;ConvertZeroDateTime=true;PersistSecurityInfo=True;AllowUserVariables=True;SslMode=none;");
+                actionManager.dbActionExecuter = new MySqlActionExecuter("[]");
 
                 return actionManager;
             }

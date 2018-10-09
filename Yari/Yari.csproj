@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Version>8.0.13</Version>
+    <Description>Yari for MySql databases. A JSON Middleware that with no code puts all the database power on the hands of web developers.</Description>
+    <PackageProjectUrl>https://github.com/reyhc29/yari</PackageProjectUrl>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/reyhc29/yari.git</RepositoryUrl>
+    <RepositoryType>gihub</RepositoryType>
+    <PackageTags>mysql, json, .net core, database access layer, middletier</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Yari.MySql</id>
-    <version>1.0.4</version>
+    <version>1.0.0</version>
     <authors>Reynaldo Hidalgo</authors>
     <owners>Reynaldo Hidalgo</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,7 +13,7 @@
     <dependencies>
       <group targetFramework=".NETCoreApp2.1">
         <dependency id="Newtonsoft.Json" version="11.0.2" exclude="Build,Analyzers"/>
-        <dependency id="MySql.Data" version="8.0.12" exclude="Build,Analyzers" />
+        <dependency id="MySql.Data" version="8.0.13" exclude="Build,Analyzers" />
       </group>
     </dependencies>
     <references>

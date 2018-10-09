@@ -4,13 +4,14 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Authors>Reynaldo Hidalgo</Authors>
     <Product>Yari</Product>
-    <PackageLicenseUrl>MIT</PackageLicenseUrl>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/reyhc29/yari</PackageProjectUrl>
     <RepositoryUrl>https://github.com/reyhc29/yari.git</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <PackageTags>json, .net core, database access layer, middletier</PackageTags>
+    <PackageTags>mysql, json, .net core, database access layer, middletier</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Yari for MySql databases. A JSON Middleware that with no code puts all the database power on the hands of web developers.</Description>
+    <Version>8.0.13</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,5 +29,9 @@
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.abstractions\2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy &quot;$(TargetDir)Yari.dll&quot; &quot;$(SolutionDir)Nuget\Yari.MySql\lib\netcoreapp2.1\Yari.dll&quot;&#xD;&#xA;copy &quot;$(TargetDir)Yari.MySql.dll&quot; &quot;$(SolutionDir)Nuget\Yari.MySql\lib\netcoreapp2.1\Yari.MySql.dll&quot;" />
+  </Target>
 
 </Project>
