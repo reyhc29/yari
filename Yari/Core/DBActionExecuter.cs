@@ -20,7 +20,7 @@ namespace Yari
             this.connectionString = connectionString;
         }
 
-        protected internal ILogger<DBActionExecuter> logger;
+        protected internal Action<LogLevel, string, Exception> onLog;
 
         internal abstract JObject Execute(ActionDescriptor actionDescriptor);
     }

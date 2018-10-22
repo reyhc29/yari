@@ -17,7 +17,7 @@ namespace Yari
 
         private Dictionary<string, Func<dynamic, JObject, JObject>> afterExecuteHandlers;
 
-        internal ILogger<ActionManager> logger;
+        internal Action<LogLevel, string, Exception> onLog;
 
         internal DBActionExecuter dbActionExecuter;
 
@@ -44,16 +44,25 @@ namespace Yari
         /// <returns>Returns a typed result. For complex result type make sure the provided Type has the proper json attributes for deserializing: result, result1, result2 ...</returns>
         public T ExecuteStoredProc<T>(string actionName, ResultType resultType, params dynamic[] parameters)
         {
-            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.StoredProcedure };
+            return ExecuteStoredProc<T>(actionName, resultType, LogLevel.Information, parameters);
+        }
+        public T ExecuteStoredProc<T>(string actionName, ResultType resultType, LogLevel logLevel, params dynamic[] parameters)
+        {
+            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.StoredProcedure, LogLevel = logLevel };
 
             T result = Execute<T>(actionDescriptor);
 
             return result;
         }
 
+
         public void ExecuteStoredProc(string actionName, params dynamic[] parameters)
         {
-            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = ResultType.Empty, ResultNames = null, ActionType = ActionType.StoredProcedure };
+            ExecuteStoredProc(actionName, LogLevel.Information, parameters);
+        }
+        public void ExecuteStoredProc(string actionName, LogLevel logLevel, params dynamic[] parameters)
+        {
+            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = ResultType.Empty, ResultNames = null, ActionType = ActionType.StoredProcedure, LogLevel = logLevel };
 
             Execute(actionDescriptor);
         }
@@ -68,7 +77,11 @@ namespace Yari
         /// <returns></returns>
         public T ExecuteFunction<T>(string actionName, ResultType resultType, params dynamic[] parameters)
         {
-            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.Function };
+            return ExecuteFunction<T>(actionName, resultType, LogLevel.Information, parameters);
+        }
+        public T ExecuteFunction<T>(string actionName, ResultType resultType, LogLevel logLevel, params dynamic[] parameters)
+        {
+            ActionDescriptor actionDescriptor = new ActionDescriptor() { ActionName = actionName, Params = parameters, ResultType = resultType, ResultNames = null, ActionType = ActionType.Function, LogLevel = logLevel };
 
             JObject jsonResult = Execute(actionDescriptor);
 

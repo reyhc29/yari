@@ -35,8 +35,8 @@ namespace Yari.MySql
                     {
                         string commandText = generateCommandText(actionDescriptor);
 
-                        if (logger != null)
-                            logger.LogDebug("Executing query: ", getTraceCommandText(commandText, actionDescriptor.Params));
+                        if (onLog != null)
+                            onLog(actionDescriptor.LogLevel, $"Executing query: {getTraceCommandText(commandText, actionDescriptor.Params)}", null);
 
                         command.CommandType = CommandType.Text;
                         command.CommandText = commandText;
@@ -123,8 +123,8 @@ namespace Yari.MySql
             }
             catch (Exception exp)
             {
-                if (logger != null)
-                    logger.LogError(exp, "Action Execution Failed!");
+                if (onLog != null)
+                    onLog(LogLevel.Error, "Action Execution Failed!", exp);
 
                 throw;
             }
@@ -168,7 +168,7 @@ namespace Yari.MySql
                     string isQuoted = (param.value is string) ? "'" : "";
                     string fixedParam = isQuoted + param.value.ToString() + isQuoted;
 
-                    traceCommandText.Replace($"@p{param.index}", fixedParam);
+                    traceCommandText = traceCommandText.Replace($"@p{param.index}", fixedParam);
                 }
             }
 

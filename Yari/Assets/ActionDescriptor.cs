@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -79,6 +80,11 @@ namespace Yari
                 {
                     Params = actionDescriptor.GetTypedPropertyValue<IEnumerable<dynamic>>("Params");
                 }
+
+                if (!actionDescriptor.HasProperty("LogLevel"))
+                {
+                    LogLevel = LogLevel.Information;
+                }
             }
 
             IsValidated = true;
@@ -97,5 +103,7 @@ namespace Yari
         public ResultType ResultType { get; set; }
 
         public IEnumerable<string> ResultNames { get; set; }
+
+        public LogLevel LogLevel { get; set; }
     }
 }

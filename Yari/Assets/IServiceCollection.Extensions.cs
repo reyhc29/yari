@@ -18,11 +18,12 @@ namespace Yari
            
             services.AddSingleton<ActionManager>((serviceProvider) =>
             {
-                options.dbActionExecuter.logger = serviceProvider.GetRequiredService<ILogger<DBActionExecuter>>();
+                options.dbActionExecuter.onLog = options.OnLog;
 
                 ActionManager actionManager = new ActionManager();
                 actionManager.dbActionExecuter = options.dbActionExecuter;
-                actionManager.logger = serviceProvider.GetRequiredService<ILogger<ActionManager>>();
+
+                actionManager.onLog = options.OnLog;
 
                 return actionManager;
             });
