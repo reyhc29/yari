@@ -14,25 +14,23 @@ namespace Yari
     public class ActionDescriptor
     {
         private JObject actionDescriptor;
-        private bool defaultConstructorUsed;
+        private bool defaultConstructorUsed = false;
 
-        internal bool IsValidated { get; private set; }
+        internal bool IsValidated { get; private set; } = false;
 
         public ActionDescriptor()
         {
             defaultConstructorUsed = true;
-
-            IsValidated = false;
         }
 
-        public ActionDescriptor(string jsonStringActionDescriptor) : this()
+        public ActionDescriptor(string jsonStringActionDescriptor) 
         {
             actionDescriptor = JObject.Parse(jsonStringActionDescriptor);
 
             Validate();
         }
 
-        public ActionDescriptor(JObject jsonActionDescriptor) : this()
+        public ActionDescriptor(JObject jsonActionDescriptor) 
         {
             actionDescriptor = jsonActionDescriptor;
 
@@ -46,12 +44,12 @@ namespace Yari
             if (defaultConstructorUsed)
             {
                 if (String.IsNullOrWhiteSpace(ActionName))
-                    throw new ConfigurationException("Provided Action Description is not valid: Action Name is required.");
+                    throw new ConfigurationException("Provided ActionDescription object requires the ActionName property.");
             }
             else
             {
                 if (!actionDescriptor.HasProperty("ActionName"))
-                    throw new ConfigurationException("Provided Action Description is not valid: Action Name is required.");
+                    throw new ConfigurationException("Provided ActionDescription object requires the ActionName property.");
                 else
                     ActionName = actionDescriptor.GetTypedPropertyValue<string>("ActionName");
 
