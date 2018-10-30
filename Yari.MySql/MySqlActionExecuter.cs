@@ -80,7 +80,7 @@ namespace Yari.MySql
                                 JArray dataArray = null;
                                 foreach (RowData rd in getResults(reader))
                                 {
-                                    if (rd.IsFirstRow)
+                                    if (rd.Type == RowType.FirstRow || rd.Type == RowType.EmptyRow)
                                     {
                                         if (resultName != null)
                                             result.Add(resultName, (JToken)dataArray);
@@ -98,13 +98,16 @@ namespace Yari.MySql
                                         resultsCount++;
                                     }
 
-                                    JObject row = new JObject();
-                                    for (int i = 0; i < rd.Columns.Count(); i++)
+                                    if (rd.Type != RowType.EmptyRow)
                                     {
-                                        row.AddProperty(rd.Columns[i], rd.Values[i]);
-                                    }
+                                        JObject row = new JObject();
+                                        for (int i = 0; i < rd.Columns.Count(); i++)
+                                        {
+                                            row.AddProperty(rd.Columns[i], rd.Values[i]);
+                                        }
 
-                                    dataArray.Add(row);
+                                        dataArray.Add(row);
+                                    }
                                 }
 
                                 if (resultName != null)
@@ -204,18 +207,19 @@ namespace Yari.MySql
             return result;
         }
 
+        private enum RowType { FirstRow, DataRow, EmptyRow }
 
         private class RowData
         {
-            public bool IsFirstRow { get; set; }
+            public RowType Type { get; set; }
 
             public string[] Columns { get; set; }
 
             public object[] Values { get; set; }
 
-            public RowData(bool isFirstRow, string[] columns, object[] values)
+            public RowData(RowType type, string[] columns, object[] values)
             {
-                IsFirstRow = isFirstRow;
+                Type = type;
                 Columns = columns;
                 Values = values;
             }
@@ -223,24 +227,41 @@ namespace Yari.MySql
 
         private IEnumerable<RowData> getResults(IDataReader reader)
         {
-            bool firstRow = true;
+            bool readingFirstRow = true;
+            bool moreRows = false;
 
             do
             {
-                firstRow = true;
+                readingFirstRow = true;
 
                 string[] columns = (from row in reader.GetSchemaTable().Rows.Cast<DataRow>()
                                           select row[0].ToString()).ToArray();
 
-                while (reader.Read())
+                while (true)
                 {
-                    object[] data = new object[reader.FieldCount];
+                    moreRows = reader.Read();
 
-                    reader.GetValues(data);
+                    if (readingFirstRow && !moreRows)
+                    {
+                        yield return new RowData(RowType.EmptyRow, columns, null);
 
-                    yield return new RowData(firstRow, columns, data);
+                        break;
+                    }
 
-                    firstRow = false;
+                    if (moreRows)
+                    {
+                        object[] data = new object[reader.FieldCount];
+
+                        reader.GetValues(data);
+
+                        yield return new RowData(readingFirstRow ? RowType.FirstRow : RowType.DataRow, columns, data);
+
+                        readingFirstRow = false;
+                    }
+                    else //last row of a result with at least one row
+                    {
+                        break;
+                    }
                 }
 
             } while (reader.NextResult());

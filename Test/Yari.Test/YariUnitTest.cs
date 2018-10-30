@@ -28,8 +28,8 @@ namespace Yari.Test
         {
             ActionDescriptor actionDescriptor = new ActionDescriptor()
             {
-                ActionName = "yari_test_2",
-                ResultType = ResultType.Array,
+                ActionName = "yari_test_1",
+                ResultType = ResultType.MultipleArrays,
             };
 
             JObject result = actionManager.Execute(actionDescriptor);
