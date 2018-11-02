@@ -100,7 +100,11 @@ namespace Yari
         {
             JObject jsonResult = Execute(actionDescriptor);
 
-            T result = jsonResult.ToObject<T>();
+            T result;
+            if (actionDescriptor.ResultType == ResultType.Scalar)
+                result = jsonResult.GetTypedPropertyValue<T>("result");
+            else
+                result = jsonResult.ToObject<T>();
 
             return result;
         }
