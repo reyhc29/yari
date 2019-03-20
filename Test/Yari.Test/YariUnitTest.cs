@@ -17,7 +17,7 @@ namespace Yari.Test
             get
             {
                 ActionManager actionManager = new ActionManager();
-                actionManager.dbActionExecuter = new MySqlActionExecuter("[]");
+                actionManager.dbActionExecuter = new MySqlActionExecuter("Server=db.primevoix.com;Username=apps;Password=apps3210;database=primecc;Port=3306;ConvertZeroDateTime=true;PersistSecurityInfo=True;AllowUserVariables=True;");
 
                 return actionManager;
             }
@@ -71,7 +71,7 @@ namespace Yari.Test
             dynamic param = JObject.FromObject(new
             {
                 age = 1,
-                name = "yari",
+                name = "rea",
                 jobs = new List<string> { "developer", "support", "mathematichian" }
             });
 
@@ -83,7 +83,7 @@ namespace Yari.Test
         [TestMethod]
         public void TestExecute5()
         {
-            Test5 result = actionManager.ExecuteStoredProc<Test5>("yari_test_4", ResultType.Object, 1, "yari", DateTime.Now);
+            Test5 result = actionManager.ExecuteStoredProc<Test5>("yari_test_4", ResultType.Object, 1, null, DateTime.Now);
 
             Assert.IsNotNull(result);
         }

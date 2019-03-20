@@ -140,11 +140,25 @@ namespace Yari.MySql
                 //treat some especial cases firts
                 if (param.Value is JObject)
                 {
-                    command.Parameters.Add(param.Name, MySqlDbType.JSON).Value = param.Value;
+                    if (((JToken)JObject.FromObject(param.Value))["param"] == null)
+                    {
+                        command.Parameters.AddWithValue(param.Name, DBNull.Value);
+                    }
+                    else
+                    {
+                        command.Parameters.Add(param.Name, MySqlDbType.JSON).Value = param.Value;
+                    }
                 }
                 else //default assigment
                 {
-                    command.Parameters.AddWithValue(param.Name, param.Value);
+                    if (param.Value == null)
+                    {
+                        command.Parameters.AddWithValue(param.Name, DBNull.Value);
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue(param.Name, param.Value);
+                    }
                 }
             }
         }
